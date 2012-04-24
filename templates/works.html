@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block lib %}
+<script src="/static/js/endless.js" type="text/javascript" charset="utf-8"></script>
+<script src="/static/js/endless_on_scroll.js" type="text/javascript" charset="utf-8"></script>
+{% endblock %}
+
+{% block nav %}
+<nav class="nav-site">
+    <ul class="nav-site-list" id="nav-site">
+        <li><a href="/">Home</a></li>
+    </ul>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div id="works" class="index-block">
+    <h1>Our works</h1>
+    {% include page_template %}
+</div>
+{% endblock %}

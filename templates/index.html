@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% load markup %}
+{% load thumbnail %}
+
+{% block lib %}
+<!-- <script language="JavaScript" type="text/javascript" src="/static/js/jquery.scrollTo.js"></script> -->
+{% endblock %}
+
+{% block js_code %}
+<script type="text/javascript">
+$(document).ready(function() {
+  function filterPath(string) {
+  return string
+    .replace(/^\//,'')
+    .replace(/(index|default).[a-zA-Z]{3,4}$/,'')
+    .replace(/\/$/,'');
+  }
+  var locationPath = filterPath(location.pathname);
+  var scrollElem = scrollableElement('html', 'body');
+
+  $('a[href*=#]').each(function() {
+    var thisPath = filterPath(this.pathname) || locationPath;
+    if (  locationPath == thisPath
+    && (location.hostname == this.hostname || !this.hostname)
+    && this.hash.replace(/#/,'') ) {
+      var $target = $(this.hash), target = this.hash;
+      if (target) {
+        var targetOffset = $target.offset().top;
+        $(this).click(function(event) {
+          event.preventDefault();
+          $(scrollElem).animate({scrollTop: targetOffset}, 800, function() {
+            location.hash = target;
+          });
+        });
+      }
+    }
+  });
+
+  // use the first element that is "scrollable"
+  function scrollableElement(els) {
+    for (var i = 0, argLength = arguments.length; i <argLength; i++) {
+      var el = arguments[i],
+          $scrollElement = $(el);
+      if ($scrollElement.scrollTop()> 0) {
+        return el;
+      } else {
+        $scrollElement.scrollTop(1);
+        var isScrollable = $scrollElement.scrollTop()> 0;
+        $scrollElement.scrollTop(0);
+        if (isScrollable) {
+          return el;
+        }
+      }
+    }
+    return [];
+  }
+
+});
+</script>
+{% endblock %}
+
+{% block nav %}
+<nav class="nav-site">
+    <ul class="nav-site-list" id="nav-site">
+        <li><a href="#works">Works</a></li>
+        {% for item in indexpage %}
+        <li><a href="#{{ item.slug }}">{{ item.menu }}</a></li>
+        {% endfor %}
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+</nav>
+{% endblock %}
+
+{% block content %}
+
+<div id="works" class="index-block wrap-row">
+    <h1>Our works</h1>
+    {% for item in works %}
+
+        <div class="work-img left">
+          {% thumbnail item.poster "800x450" crop="top" as im %}
+            <a href="{{ item.get_absolute_url }}"><img src="{{ im.url }}"></a>
+          {% endthumbnail %}
+        </div>
+        <div class="work-desc right">
+            {% if item.logo %}
+            {% thumbnail item.logo "140x80" crop="center" as im %}
+              <img class="work-logo" src="{{ im.url }}">
+            {% endthumbnail %}
+            {% endif %}
+            <h2><a href="{{ item.get_absolute_url }}">{{ item.title }}</a></h2>
+            {{ item.get_description|markdown }}
+        </div>
+
+    {% endfor %}
+    <div class="all-works"><a href="/works/">All projects</a></div>
+</div>
+
+{% for item in indexpage %}
+    <div id="{{ item.slug }}" class="index-block">
+    <h1>{{ item.title }}</h1>
+    {{ item.content|markdown }}
+    </div>
+{% endfor %}
+
+<div id="contact" class="index-block">
+    <h1>Contact us</h1>
+    asdasdasd 
+    asdasd
+</div>
+
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% load markup %}
+{% load thumbnail %}
+
+{% block lib %}
+<link rel="stylesheet" type="text/css" href="/static/css/jquery.lightbox-0.5.css" media="screen" />
+<script type="text/javascript" src="/static/js/jquery.lightbox-0.5.js"></script>
+{% endblock %}
+
+{% block js_code %}
+<script type="text/javascript">
+    $(function() {
+        $('#gallery a').lightBox();
+    });
+</script>
+{% endblock %}
+
+{% block nav %}
+<nav class="nav-site">
+    <ul class="nav-site-list" id="nav-site">
+        <li><a href="/">Home</a></li>
+    </ul>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="work-sinlge">
+    <h1>{{ work.title }}</h1>
+    {% if work.get_content > 1%}
+    {{ work.get_content|markdown }}
+    {% else %}
+    {{ work.content|markdown }}
+    {% endif %}
+    <div id="gallery" class="gallery">
+        <ul>
+        {% for photo in work.workimage_set.all %}
+        {% thumbnail photo.image "x500" as big %}
+            {% thumbnail photo.image "200x120" crop="center" as small %}
+            <li><a href="{{ big.url }}"><img src="{{ small.url }}"></a></li>
+            {% endthumbnail %}
+        {% endthumbnail %}
+        {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

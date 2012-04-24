@@ -1,0 +1,29 @@
+{% load markup %}
+{% load thumbnail %}
+{% load endless %}
+{% paginate 2 works %}
+
+{% for item in works %}
+    <div class="works-list wrap-row{% if forloop.last %} last{% endif %}">
+        <div class="work-img left">
+          {% thumbnail item.poster "800x450" crop="top" as im %}
+            <a href="{{ item.get_absolute_url }}"><img src="{{ im.url }}"></a>
+          {% endthumbnail %}
+        </div>
+        <div class="work-desc right">
+            {% if item.logo %}
+            {% thumbnail item.logo "140x80" crop="center" as im %}
+              <img class="work-logo" src="{{ im.url }}">
+            {% endthumbnail %}
+            {% endif %}
+            <h2><a href="{{ item.get_absolute_url }}">{{ item.title }}</a></h2>
+            {{ item.get_description|markdown }}
+        </div>
+    </div>
+{% endfor %}
+
+{% show_more %}
+
+{#<div class="pagination">#}
+    {#{% show_pages %}#}
+{#</div>#}
