@@ -5,14 +5,18 @@ from django.shortcuts import render_to_response, get_object_or_404
 from endless_pagination.decorators import page_template
 from django.template import RequestContext
 
-@page_template("archive_page.html")
-def works(request, extra_context=None):
+def works(request, extra_context=None, template=None):
     context = {
         'works' : Work.objects.filter(arch=False),
     }
     if extra_context is not None:
         context.update(extra_context)
-    return render_to_response('works.html', context, context_instance=RequestContext(request))
+
+    if request.is_ajax():
+        template = "archive_page.html"
+    else:
+        template = "works.html"
+    return render_to_response(template, context, context_instance=RequestContext(request))
 
 def view_work(request, slug):
     return render_to_response('work.html', {
